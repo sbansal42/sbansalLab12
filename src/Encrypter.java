@@ -34,6 +34,9 @@ public class Encrypter {
      */
     public void encrypt(String inputFilePath, String encryptedFilePath) throws Exception {
         //TODO: Call the read method, encrypt the file contents, and then write to new file
+        String isDecrypted = readFile(inputFilePath);
+        String isEncrypted = caesarCipher(isDecrypted, shift);
+        writeFile(isEncrypted, encryptedFilePath);
     }
 
     /**
@@ -45,6 +48,9 @@ public class Encrypter {
      */
     public void decrypt(String messageFilePath, String decryptedFilePath) throws Exception {
         //TODO: Call the read method, decrypt the file contents, and then write to new file
+        String isEncrypted = readFile(messageFilePath);
+        String isDecrypted = caesarCipher(isEncrypted, -shift);
+        writeFile(isDecrypted, decryptedFilePath);
     }
 
     /**
@@ -55,10 +61,15 @@ public class Encrypter {
      * @throws Exception if an error occurs while reading the file
      */
     private static String readFile(String filePath) throws Exception {
-        String message = "";
+        StringBuilder message = new StringBuilder();
         //TODO: Read file from filePath
-        return message;
-    }
+        try (Scanner scanner = new Scanner(new File(filePath))) {
+            while (scanner.hasNext()) {
+                message.append(scanner.nextLine()).append("\n");
+            }
+        }
+        return message.toString();
+     }
 
     /**
      * Writes data to a file.
@@ -66,10 +77,26 @@ public class Encrypter {
      * @param data     the data to be written to the file
      * @param filePath the path to the file where the data will be written
      */
-    private static void writeFile(String data, String filePath) {
+    private static void writeFile(String data, String filePath) throws IOException {
         //TODO: Write to filePath
+    	try (FileWriter written = new FileWriter(new File(filePath))) {
+            written.write(data);
+        }
     }
-
+    private static String caesarCipher(String text, int shift) {
+        StringBuilder cipher = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            if (Character.isLetter(c)) {
+                int originalPos = c - 'a';
+                int newPos = (originalPos + shift) % 26;
+                char newCharacter = (char) ('a' + newPos);
+                cipher.append(newCharacter);
+            } else {
+                cipher.append(c);
+            }
+        }
+        return cipher.toString();
+    }
     /**
      * Returns a string representation of the encrypted text.
      *
