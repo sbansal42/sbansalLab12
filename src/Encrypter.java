@@ -87,9 +87,10 @@ public class Encrypter {
         StringBuilder cipher = new StringBuilder();
         for (char c : text.toCharArray()) {
             if (Character.isLetter(c)) {
-                int originalPos = c - 'a';
-                int newPos = (originalPos + shift) % 26;
-                char newCharacter = (char) ('a' + newPos);
+                char cas = Character.isLowerCase(c) ? 'a' : 'A';
+                int originalPos = c - cas;
+                int newPos = (originalPos + shift + 26) % 26;
+                char newCharacter = (char) (cas + newPos);
                 cipher.append(newCharacter);
             } else {
                 cipher.append(c);
